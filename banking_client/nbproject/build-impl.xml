@@ -799,8 +799,14 @@ exists or setup the property manually. For example like this:
             </condition>
         </fail>
     </target>
-    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps"/>
-    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps"/>
+    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
+        <ant antfile="${project.banking_remote}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.example_remote}/build.xml" inheritall="false" target="jar"/>
+    </target>
+    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
+        <ant antfile="${project.banking_remote}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.example_remote}/build.xml" inheritall="false" target="jar"/>
+    </target>
     <target depends="init, -check-main-class, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
     <target depends="init,deps-jar" name="-pre-pre-compile">
         <mkdir dir="${classes.dir}"/>
@@ -810,10 +816,20 @@ exists or setup the property manually. For example like this:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="compile" if="is.server.weblogic" name="library-inclusion-in-archive">
-        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
+        <basename file="${reference.banking_remote.jar}" property="manifest.reference.banking_remote.jar"/>
+        <basename file="${reference.example_remote.jar}" property="manifest.reference.example_remote.jar"/>
+        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
+            <attribute name="Extension-List" value="jar-1 jar-2 "/>
+            <attribute name="jar-1-Extension-Name" value="${manifest.reference.banking_remote.jar}"/>
+            <attribute name="jar-2-Extension-Name" value="${manifest.reference.example_remote.jar}"/>
+        </manifest>
     </target>
     <target depends="compile" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
+        <copyfiles files="${reference.banking_remote.jar}" manifestproperty="manifest.reference.banking_remote.jar" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.example_remote.jar}" manifestproperty="manifest.reference.example_remote.jar" todir="${dist.ear.dir}/lib"/>
+        <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
+            <attribute name="Class-Path" value="${manifest.reference.banking_remote.jar} lib/${manifest.reference.banking_remote.jar} ${manifest.reference.example_remote.jar} lib/${manifest.reference.example_remote.jar} "/>
+        </manifest>
     </target>
     <target name="-copy-meta-inf">
         <copy todir="${classes.dir}">
@@ -1314,7 +1330,10 @@ exists or setup the property manually. For example like this:
                 CLEANUP SECTION
                 ===============
             -->
-    <target depends="init" name="deps-clean" unless="no.deps"/>
+    <target depends="init" name="deps-clean" unless="no.deps">
+        <ant antfile="${project.banking_remote}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.example_remote}/build.xml" inheritall="false" target="clean"/>
+    </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>

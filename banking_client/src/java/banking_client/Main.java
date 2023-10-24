@@ -4,17 +4,28 @@
  */
 package banking_client;
 
+import apt.caculatorSessionBeanRemote;
+import apt.msgBeanRemote;
+import javax.ejb.EJB;
+
 /**
  *
  * @author user
  */
 public class Main {
 
+    @EJB(lookup = "msgBeanJNDI")
+    private static msgBeanRemote msgBean;
+    
+    @EJB(lookup = "calJNDI")
+    private static caculatorSessionBeanRemote caculatorSessionBean;
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        System.out.println("Tổng của 2 số là"+caculatorSessionBean.plus(5, 3));
+        msgBean.sayHello("Hello world");
     }
     
 }

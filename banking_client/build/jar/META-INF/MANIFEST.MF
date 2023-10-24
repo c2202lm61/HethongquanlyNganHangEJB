@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.10.8
+Created-By: 21-ea+14-Ubuntu-0ubuntu1 (Private Build)
+X-COMMENT: Main-Class will be added automatically by build
+Main-Class: banking_client.Main
+
