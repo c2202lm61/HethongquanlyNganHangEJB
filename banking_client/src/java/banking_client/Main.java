@@ -4,8 +4,9 @@
  */
 package banking_client;
 
-import apt.caculatorSessionBeanRemote;
-import apt.msgBeanRemote;
+import apt.CustomersFacadeRemote;
+import apt.TransactionTypeFacadeRemote;
+import ent.TransactionType;
 import javax.ejb.EJB;
 
 /**
@@ -14,18 +15,22 @@ import javax.ejb.EJB;
  */
 public class Main {
 
-    @EJB(lookup = "msgBeanJNDI")
-    private static msgBeanRemote msgBean;
+    @EJB(lookup = "TransactionTypeFacade")
+    private static TransactionTypeFacadeRemote transactionTypeFacade;
+
+    @EJB(lookup = "CustomersFacade")
     
-    @EJB(lookup = "calJNDI")
-    private static caculatorSessionBeanRemote caculatorSessionBean;
+    private static CustomersFacadeRemote customersFacade;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Tổng của 2 số là"+caculatorSessionBean.plus(5, 3));
-        msgBean.sayHello("Hello world");
+        System.out.println(customersFacade.count());
+        TransactionType transactionType = new TransactionType();
+        transactionType.setTransactionTypename("Banktransfer");
+        transactionTypeFacade.create(transactionType);
+        // TODO code application logic here
     }
     
 }
