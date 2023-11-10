@@ -8,12 +8,18 @@ import apt.CustomersFacadeRemote;
 import apt.TransactionTypeFacadeRemote;
 import ent.TransactionType;
 import javax.ejb.EJB;
+import msg.bankingSessionBeanRemote;
 
 /**
  *
  * @author user
  */
 public class Main {
+
+    @EJB(lookup = "bankingSessionBean")
+    private static bankingSessionBeanRemote bankingSessionBean;
+
+    
 
     @EJB(lookup = "TransactionTypeFacade")
     private static TransactionTypeFacadeRemote transactionTypeFacade;
@@ -25,11 +31,13 @@ public class Main {
     /**
      * @param args the command line arguments
      */
+    
     public static void main(String[] args) {
         System.out.println(customersFacade.count());
         TransactionType transactionType = new TransactionType();
         transactionType.setTransactionTypename("Banktransfer");
         transactionTypeFacade.create(transactionType);
+        bankingSessionBean.sentMessage("Hello world");
         // TODO code application logic here
     }
     
